@@ -165,9 +165,9 @@ void eeprom_write_block(unsigned char addr, unsigned char *p, unsigned short len
 {
     if (addr + len > P_SIZE)
         return;
-    unsigned long *l[P_SIZE / 4];             // arr
-    unsigned char *ch = (unsigned char *)(l); // char p to arr + address
-    eeprom_read_block(0, (unsigned char *)l, P_SIZE);
+    unsigned long l[P_SIZE / 4];             // arr
+    unsigned char *ch = (unsigned char *)l; // char p to arr + address
+    eeprom_read_block(0, ch, P_SIZE);
     // memcpy(ch + addr, p, len); //?? is memcpy wise here?
     for (unsigned char i = 0; i < len; i++)
     {
@@ -176,11 +176,9 @@ void eeprom_write_block(unsigned char addr, unsigned char *p, unsigned short len
     }
     _eeprom_ul();
     _eeprom_pageE(0);
-    for (unsigned char i = 0; i < 64; i++)
+    for (unsigned char i = 0; sizeof(l); i++)
     {
         _eeprom_wordWr(i * 4, l[i]);
-        // delay(10);
-        // _eeprom_wordWr(i, l[i]);
     }
     _eeprom_l();
 }
